@@ -85,5 +85,12 @@ def get_scope(user_sign):
         return failure_response("No horoscope found!")
     return success_response(sign.serialize())    
 
+@app.route("/api/users/<int:user_id>/horoscope/")
+def get_user_scope(user_id):
+    user = Users.query.filter_by(id=user_id).first()
+    if user is None:
+        return failure_response("No user found!")
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
