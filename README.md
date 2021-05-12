@@ -4,6 +4,7 @@
 This app provides a simple interface for all of the astrology lovers to hear their daily horoscope. Have fun!
 
 iOS GITHUB: https://github.com/EmoryWalsh/hackchallenge
+Backend Deployed at: https://ajw282dailyhoroscope.herokuapp.com/api/<int:_number_of_sign>
 
 Requirements:
 backend: we've addressed all requirements
