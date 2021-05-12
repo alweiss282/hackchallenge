@@ -5,6 +5,21 @@ from db import Signs
 from flask import request 
 import json
 
+scope_dict = {
+    1 : "Aquarius",
+    2 : "Pisces", 
+    3 : "Aries",
+    4 : "Taurus",
+    5 : "Gemini",
+    6 : "Cancer",
+    7 : "Leo",
+    8 : "Virgo",
+    9 : "Libra",
+    10 : "Scorpio",
+    11 : "Sagittarius",
+    12 : "Capricorn"
+}
+
 
 app = Flask(__name__)
 db_filename = "horoscope.db"
@@ -42,30 +57,52 @@ def load_scopes():
         Signs(sign=11, horoscope="You may not be one for detailed schedules - you prefer to take each moment as it comes - but if you want to make progress in one particular direction then you do need to get organized. If you don't, your workload may overwhelm you."),
         Signs(sign=12, horoscope="Ignore the critics and the cynics and do what every fiber of your being tells you is right. You've accomplished a lot in recent weeks and have a right to feel proud, but you can and you must achieve even more in the very near future.")
     ]
+
     for sign in signs:
         db.session.add(sign)
     db.session.commit()
-    print("done!")
 
 # your routes here
 @app.route("/api/users/", methods=["POST"])
 def create_user():
     body = json.loads(request.data)
     name = body.get("name")
-    sign = body.get("sign")
+    sign_name = body.get("sign")
+    for key in scope_dict:
+        if scope_dict.get("key") == sign_name:
+            sign_num = key 
+    sign = Signs.query.filter_by(sign=sign_num).first()
     if name is None or sign is None:
         return failure_response("Missing field!", 400)
-    new_user = Users(name=name, sign=sign)
+    new_user = Users(name=name, sign_id=sign)
     db.session.add(new_user)
     db.session.commit()
     return success_response(new_user.serialize(), 201)
 
 @app.route("/api/users/<int:user_id>/")
 def get_user(user_id):
+    u = Users.query.filter_by(id=user_id).first()
+    if u is None:
+        return failure_response("No user found!")
+    user = u.serialize()
+    sign = Signs.query.filter_by(id=user.get("sign_id")).first()
+    return_user = {
+        "id" : user.get("id"),
+        "name" : user.get("name"),
+        "sign" : scope_dict.get(sign),
+    }
+    return success_response(return_user)
+    return "did it work"
+
+
+@app.route("/api/users/<int:user_id>/horoscope/")
+def get_scope_by_user(user_id):
     user = Users.query.filter_by(id=user_id).first()
     if user is None:
         return failure_response("No user found!")
-    return success_response(user.serialize())
+    horoscope = Signs.query.filter_by(id=user.serialize().get("sign_id")).first()
+    return success_response(scope_dict.get(horoscope.serialize().get("sign")))
+    return user
 
 @app.route("/api/users/<int:user_id>/", methods=["DELETE"])
 def delete_user(user_id):
@@ -84,6 +121,8 @@ def get_scope(user_sign):
     if sign is None:
         return failure_response("No horoscope found!")
     return success_response(sign.serialize())    
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
