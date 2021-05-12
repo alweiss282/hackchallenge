@@ -1,4 +1,5 @@
 from db import db
+import os 
 from flask import Flask
 from db import Users
 from db import Signs
@@ -125,4 +126,5 @@ def get_scope(user_sign):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    port = os.environ.get('PORT', 5000)
+    app.run(host="0.0.0.0", port=port)

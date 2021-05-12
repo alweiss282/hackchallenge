@@ -32,7 +32,7 @@ class Users(db.Model):
         return {
             "id" : self.id,
             "name" : self.name,
-            "sign_id" : self.sign_id,
+            "sign_id" : self.sign_id
         }
     
 class Signs(db.Model):

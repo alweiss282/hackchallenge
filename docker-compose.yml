@@ -1,0 +1,6 @@
+version: "3"
+services:
+    demo:
+        image: alweiss1/image
+        ports:
+            - "5000:5000"
