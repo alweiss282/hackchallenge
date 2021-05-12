@@ -22,18 +22,17 @@ class Users(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    sign = db.Column(db.String, nullable=False)
-   
+    sign_id = db.Column(db.Integer, db.ForeignKey('signs.id'))
 
     def __init__(self, **kwargs):
         self.name = kwargs.get("name")
-        self.sign = kwargs.get("sign")
+        self.sign_id = kwargs.get("sign_id")
 
     def serialize(self): 
         return {
             "id" : self.id,
             "name" : self.name,
-            "sign" : self.sign
+            "sign_id" : self.sign_id,
         }
     
 class Signs(db.Model):
@@ -41,8 +40,8 @@ class Signs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sign = db.Column(db.Integer, nullable=False)
     horoscope = db.Column(db.String, nullable=False)
+    users = db.relationship("Users", cascade="delete")
    
-
     def __init__(self, **kwargs):
         self.sign = kwargs.get("sign")
         self.horoscope = kwargs.get("horoscope")
@@ -51,7 +50,8 @@ class Signs(db.Model):
         return {
             "id" : self.id,
             "sign" : scope_dict.get(self.sign),
-            "horoscope" : self.horoscope
+            "horoscope" : self.horoscope,
+            "users" : [u.serialize() for u in self.users]
         }
     
 
