@@ -1,4 +1,7 @@
 # hackchallenge
+iOS GITHUB: https://github.com/EmoryWalsh/hackchallenge
+
+Has five routes, two tables which are connected via foreign key (to implement a one-to-many relationship), and API specs are below.
 
 POST /api/users/
 
