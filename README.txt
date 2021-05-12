@@ -1,4 +1,7 @@
 # hackchallenge
+
+DailyHoroscope: get your horoscope here... daily
+
 iOS GITHUB: https://github.com/EmoryWalsh/hackchallenge
 
 Has five routes, two tables which are connected via foreign key (to implement a one-to-many relationship), and API specs are below.
@@ -70,3 +73,5 @@ Success Response:
             "horoscope" : <User Horoscope>,
         }
 }
+
+
